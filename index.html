@@ -6,118 +6,87 @@
 <title>All-In Archive</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0e0e0e;
-    --bg2: #161616;
-    --bg3: #1f1f1f;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #f0ede6;
-    --text2: #888;
-    --text3: #555;
-    --accent: #d4a853;
-    --accent2: #b8913e;
-    --danger: #e05c5c;
-    --success: #5cb88a;
-    --radius: 10px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
-
-  .shell { display: flex; min-height: 100vh; }
-  .sidebar { width: 240px; flex-shrink: 0; border-right: 0.5px solid var(--border); padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 2rem; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; }
-  .main { margin-left: 240px; flex: 1; padding: 2.5rem 2rem; max-width: 860px; }
-
-  .logo { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--accent); letter-spacing: -0.3px; line-height: 1.2; }
-  .logo span { display: block; font-size: 11px; font-family: 'DM Sans', sans-serif; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
-  .nav { display: flex; flex-direction: column; gap: 2px; }
-  .nav-item { padding: 8px 10px; border-radius: 7px; font-size: 14px; cursor: pointer; color: var(--text2); transition: all 0.15s; border: none; background: none; text-align: left; width: 100%; }
-  .nav-item:hover { background: var(--bg3); color: var(--text); }
-  .nav-item.active { background: var(--bg3); color: var(--text); border-left: 2px solid var(--accent); padding-left: 8px; }
-  .sidebar-stats { margin-top: auto; padding-top: 1rem; border-top: 0.5px solid var(--border); }
-  .stat { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
-  .stat strong { color: var(--text2); font-weight: 500; }
-
-  .panel { display: none; }
-  .panel.active { display: block; animation: fadeIn 0.2s ease; }
-
-  .page-title { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; color: var(--text); margin-bottom: 4px; }
-  .page-sub { font-size: 13px; color: var(--text3); margin-bottom: 2rem; }
-
-  .card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
-
-  label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); display: block; margin-bottom: 6px; font-weight: 500; }
-  input[type=text], textarea, select {
-    width: 100%; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: 8px;
-    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
-    transition: border-color 0.15s;
-  }
-  input[type=text] { height: 40px; padding: 0 12px; }
-  textarea { padding: 10px 12px; resize: vertical; line-height: 1.6; }
-  select { height: 38px; padding: 0 10px; cursor: pointer; }
-  input[type=text]:focus, textarea:focus { border-color: var(--accent); }
-  .field { margin-bottom: 1rem; }
-
-  .btn { height: 38px; padding: 0 18px; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 0.5px solid var(--border2); background: transparent; color: var(--text); transition: all 0.15s; white-space: nowrap; }
-  .btn:hover { background: var(--bg3); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-gold { background: var(--accent); color: #0e0e0e; border-color: transparent; font-weight: 500; }
-  .btn-gold:hover { background: var(--accent2); }
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-
-  .hint { background: var(--bg3); border: 0.5px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 1rem; }
-  .hint strong { color: var(--text); font-weight: 500; }
-
-  .progress-wrap { margin-top: 12px; display: none; }
-  .progress-track { height: 2px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
-  .status-msg { font-size: 12px; margin-top: 6px; min-height: 16px; color: var(--text2); }
-  .status-msg.error { color: var(--danger); }
-  .status-msg.success { color: var(--success); }
-
-  .filter-bar { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-  .filter-bar input { flex: 1; min-width: 160px; }
-  .filter-bar select { width: 160px; flex-shrink: 0; }
-
-  .ep-list { display: flex; flex-direction: column; gap: 10px; }
-  .ep-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.15s; }
-  .ep-card:hover { border-color: var(--border2); }
-  .ep-header { padding: 1.1rem 1.25rem; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-  .ep-title { font-family: 'Instrument Serif', serif; font-size: 17px; font-weight: 400; line-height: 1.3; color: var(--text); }
-  .ep-meta { font-size: 12px; color: var(--text3); margin-top: 5px; }
-  .ep-summary { font-size: 13px; color: var(--text2); margin-top: 6px; line-height: 1.55; }
-  .ep-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
-  .tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; background: var(--bg3); color: var(--text2); border: 0.5px solid var(--border); }
-  .chevron { color: var(--text3); font-size: 14px; flex-shrink: 0; transition: transform 0.2s; margin-top: 3px; }
-  .chevron.open { transform: rotate(180deg); }
-  .ep-body { border-top: 0.5px solid var(--border); padding: 1.25rem; }
-  .segment { margin-bottom: 1.25rem; }
-  .segment:last-of-type { margin-bottom: 0; }
-  .seg-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); margin-bottom: 8px; }
-  .bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .bullets li { font-size: 14px; line-height: 1.6; color: var(--text2); padding-left: 16px; position: relative; }
-  .bullets li::before { content: '—'; position: absolute; left: 0; color: var(--text3); }
-  .ep-footer { display: flex; gap: 8px; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); }
-
-  .empty { text-align: center; padding: 4rem 1rem; color: var(--text3); font-size: 14px; }
-  .count-label { font-size: 12px; color: var(--text3); margin-bottom: 1rem; }
-
-  .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-bottom: 0.5px solid var(--border); flex-wrap: wrap; }
-  .settings-row:last-child { border-bottom: none; }
-  .settings-label { font-size: 14px; color: var(--text); }
-  .settings-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .key-display { font-size: 12px; font-family: monospace; color: var(--text3); background: var(--bg3); padding: 4px 10px; border-radius: 6px; border: 0.5px solid var(--border); }
-
-  @media (max-width: 640px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; padding: 1.25rem; }
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  :root { --bg:#0e0e0e;--bg2:#161616;--bg3:#1f1f1f;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#f0ede6;--text2:#888;--text3:#555;--accent:#d4a853;--accent2:#b8913e;--danger:#e05c5c;--success:#5cb88a;--radius:10px; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+  .shell{display:flex;min-height:100vh;}
+  .sidebar{width:240px;flex-shrink:0;border-right:0.5px solid var(--border);padding:2rem 1.25rem;display:flex;flex-direction:column;gap:2rem;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;}
+  .main{margin-left:240px;flex:1;padding:2.5rem 2rem;max-width:860px;}
+  .logo{font-family:'Instrument Serif',serif;font-size:20px;color:var(--accent);letter-spacing:-0.3px;line-height:1.2;}
+  .logo span{display:block;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .nav{display:flex;flex-direction:column;gap:2px;}
+  .nav-item{padding:8px 10px;border-radius:7px;font-size:14px;cursor:pointer;color:var(--text2);transition:all 0.15s;border:none;background:none;text-align:left;width:100%;}
+  .nav-item:hover{background:var(--bg3);color:var(--text);}
+  .nav-item.active{background:var(--bg3);color:var(--text);border-left:2px solid var(--accent);padding-left:8px;}
+  .sidebar-stats{margin-top:auto;padding-top:1rem;border-top:0.5px solid var(--border);}
+  .stat{font-size:12px;color:var(--text3);margin-bottom:4px;}
+  .stat strong{color:var(--text2);font-weight:500;}
+  .panel{display:none;}.panel.active{display:block;animation:fadeIn 0.2s ease;}
+  .page-title{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;color:var(--text);margin-bottom:4px;}
+  .page-sub{font-size:13px;color:var(--text3);margin-bottom:2rem;}
+  .card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;}
+  label{font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:6px;font-weight:500;}
+  input[type=text],textarea,select{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.15s;}
+  input[type=text]{height:40px;padding:0 12px;}
+  textarea{padding:10px 12px;resize:vertical;line-height:1.6;}
+  select{height:38px;padding:0 10px;cursor:pointer;}
+  input[type=text]:focus,textarea:focus{border-color:var(--accent);}
+  .field{margin-bottom:1rem;}
+  .btn{height:38px;padding:0 18px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer;border:0.5px solid var(--border2);background:transparent;color:var(--text);transition:all 0.15s;white-space:nowrap;}
+  .btn:hover{background:var(--bg3);}
+  .btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .btn-gold{background:var(--accent);color:#0e0e0e;border-color:transparent;font-weight:500;}
+  .btn-gold:hover{background:var(--accent2);}
+  .btn-notion{background:#fff;color:#000;border-color:transparent;font-weight:500;font-size:13px;}
+  .btn-notion:hover{background:#e8e8e8;}
+  .btn-notion.exporting{opacity:0.6;cursor:not-allowed;}
+  .btn-notion.exported{background:var(--success);color:#fff;border-color:transparent;}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .hint{background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:1rem;}
+  .hint strong{color:var(--text);font-weight:500;}
+  .progress-wrap{margin-top:12px;display:none;}
+  .progress-track{height:2px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+  .progress-fill{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width 0.5s ease;}
+  .status-msg{font-size:12px;margin-top:6px;min-height:16px;color:var(--text2);}
+  .status-msg.error{color:var(--danger);}
+  .status-msg.success{color:var(--success);}
+  .filter-bar{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .filter-bar input{flex:1;min-width:160px;}
+  .filter-bar select{width:150px;flex-shrink:0;}
+  .ep-list{display:flex;flex-direction:column;gap:10px;}
+  .ep-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color 0.15s;}
+  .ep-card:hover{border-color:var(--border2);}
+  .ep-header{padding:1.1rem 1.25rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .ep-title{font-family:'Instrument Serif',serif;font-size:17px;font-weight:400;line-height:1.3;color:var(--text);}
+  .ep-meta{font-size:12px;color:var(--text3);margin-top:5px;}
+  .ep-summary{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.55;}
+  .ep-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+  .tag{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg3);color:var(--text2);border:0.5px solid var(--border);}
+  .chevron{color:var(--text3);font-size:14px;flex-shrink:0;transition:transform 0.2s;margin-top:3px;}
+  .chevron.open{transform:rotate(180deg);}
+  .ep-body{border-top:0.5px solid var(--border);padding:1.25rem;}
+  .segment{margin-bottom:1.25rem;}.segment:last-of-type{margin-bottom:0;}
+  .seg-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--accent);margin-bottom:8px;}
+  .bullets{list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .bullets li{font-size:14px;line-height:1.6;color:var(--text2);padding-left:16px;position:relative;}
+  .bullets li::before{content:'—';position:absolute;left:0;color:var(--text3);}
+  .ep-footer{display:flex;gap:8px;margin-top:1.25rem;padding-top:1.25rem;border-top:0.5px solid var(--border);flex-wrap:wrap;align-items:center;}
+  .notion-link{font-size:12px;color:var(--success);text-decoration:none;}
+  .notion-link:hover{text-decoration:underline;}
+  .notion-err{font-size:12px;color:var(--danger);}
+  .empty{text-align:center;padding:4rem 1rem;color:var(--text3);font-size:14px;}
+  .count-label{font-size:12px;color:var(--text3);margin-bottom:1rem;}
+  .settings-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;border-bottom:0.5px solid var(--border);flex-wrap:wrap;}
+  .settings-row:last-child{border-bottom:none;}
+  .settings-label{font-size:14px;color:var(--text);}
+  .settings-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+  .key-display{font-size:12px;font-family:monospace;color:var(--text3);background:var(--bg3);padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);}
+  @media(max-width:640px){.sidebar{display:none;}.main{margin-left:0;padding:1.25rem;}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 <div class="shell">
-
   <aside class="sidebar">
     <div class="logo">All-In<span>Podcast Archive</span></div>
     <nav class="nav">
@@ -130,29 +99,15 @@
       <div class="stat">Topics: <strong id="statTopics">—</strong></div>
     </div>
   </aside>
-
   <main class="main">
-
-    <!-- Add Episode -->
     <div class="panel active" id="panel-add">
       <div class="page-title">Add Episode</div>
       <div class="page-sub">Paste a transcript and let AI generate the summary.</div>
       <div class="card">
-        <div class="hint">
-          <strong>Getting transcripts:</strong> Use the <strong>Glasp</strong> Chrome extension on any YouTube video for a clean, timestamp-free transcript. Paste it below and hit Summarize.
-        </div>
-        <div class="field">
-          <label>Episode title</label>
-          <input type="text" id="titleInput" placeholder="e.g. E175: AI regulation, market update..." />
-        </div>
-        <div class="field">
-          <label>YouTube URL (optional)</label>
-          <input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." />
-        </div>
-        <div class="field">
-          <label>Transcript</label>
-          <textarea id="transcriptInput" rows="8" placeholder="Paste the full transcript here..."></textarea>
-        </div>
+        <div class="hint"><strong>Getting transcripts:</strong> Use the <strong>Glasp</strong> Chrome extension on any YouTube video for a clean, timestamp-free transcript. Paste it below and hit Summarize.</div>
+        <div class="field"><label>Episode title</label><input type="text" id="titleInput" placeholder="e.g. E175: AI regulation, market update..." /></div>
+        <div class="field"><label>YouTube URL (optional)</label><input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." /></div>
+        <div class="field"><label>Transcript</label><textarea id="transcriptInput" rows="8" placeholder="Paste the full transcript here..."></textarea></div>
         <div class="btn-row">
           <button class="btn btn-gold" id="summarizeBtn" onclick="summarize()">Summarize ↗</button>
           <button class="btn" onclick="clearAdd()">Clear</button>
@@ -163,8 +118,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Archive -->
     <div class="panel" id="panel-archive">
       <div class="page-title">Archive</div>
       <div class="page-sub">Search and browse all your summarized episodes.</div>
@@ -172,204 +125,135 @@
         <input type="text" id="searchInput" placeholder="Search titles, topics, bullet points..." oninput="renderArchive()" />
         <select id="topicFilter" onchange="renderArchive()"><option value="">All topics</option></select>
         <select id="speakerFilter" onchange="renderArchive()"><option value="">All speakers</option></select>
-        <select id="sortSelect" onchange="renderArchive()">
-          <option value="newest">Newest first</option>
-          <option value="oldest">Oldest first</option>
-        </select>
+        <select id="sortSelect" onchange="renderArchive()"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select>
       </div>
       <div class="count-label" id="countLabel"></div>
       <div class="ep-list" id="epList"></div>
     </div>
-
-    <!-- Settings -->
     <div class="panel" id="panel-settings">
       <div class="page-title">Settings</div>
       <div class="page-sub">Manage your connections.</div>
       <div class="card">
-        <div class="settings-row">
-          <div>
-            <div class="settings-label">Anthropic API Key</div>
-            <div class="settings-sub">Stored securely as a Netlify environment variable — never exposed in code.</div>
-          </div>
-          <div class="key-display">Configured on server ✓</div>
-        </div>
-        <div class="settings-row">
-          <div>
-            <div class="settings-label">Supabase Database</div>
-            <div class="settings-sub">Cloud storage for all your episodes.</div>
-          </div>
-          <div class="key-display" id="supabaseStatus">Checking...</div>
-        </div>
-        <div class="settings-row">
-          <div>
-            <div class="settings-label">Summarize function</div>
-            <div class="settings-sub">Netlify serverless function at /.netlify/functions/summarize</div>
-          </div>
-          <div class="key-display" id="fnStatus">Checking...</div>
-        </div>
+        <div class="settings-row"><div><div class="settings-label">Anthropic API Key</div><div class="settings-sub">Stored securely as a Netlify environment variable.</div></div><div class="key-display">Server ✓</div></div>
+        <div class="settings-row"><div><div class="settings-label">Notion Integration</div><div class="settings-sub">Exports episodes to your Notion database.</div></div><div class="key-display">Server ✓</div></div>
+        <div class="settings-row"><div><div class="settings-label">Supabase Database</div><div class="settings-sub">Cloud storage for all your episodes.</div></div><div class="key-display" id="supabaseStatus">Checking...</div></div>
+        <div class="settings-row"><div><div class="settings-label">Summarize function</div><div class="settings-sub">/.netlify/functions/summarize</div></div><div class="key-display" id="fnStatus">Checking...</div></div>
       </div>
     </div>
-
   </main>
 </div>
-
 <script>
-const SUPABASE_URL = 'https://worfvzetsvihavbrfmad.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvcmZ2emV0c3ZpaGF2YnJmbWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2MDM2ODEsImV4cCI6MjA4OTE3OTY4MX0.VcBsLz-JWHRrqzhIKrK9ZpL0UOF8LuEcTNe4ZEIJ7H0';
+const SB_URL='https://worfvzetsvihavbrfmad.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvcmZ2emV0c3ZpaGF2YnJmbWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2MDM2ODEsImV4cCI6MjA4OTE3OTY4MX0.VcBsLz-JWHRrqzhIKrK9ZpL0UOF8LuEcTNe4ZEIJ7H0';
+let expanded=new Set(),cachedEps=[],notionExported={};
 
-let expanded = new Set();
-let cachedEpisodes = [];
-
-// ── Navigation ────────────────────────────────────────────────────────────────
-function showPanel(name) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  ['add','archive','settings'].forEach((p,i) => {
-    if (p === name) document.querySelectorAll('.nav-item')[i].classList.add('active');
-  });
-  if (name === 'archive') renderArchive();
-  if (name === 'settings') checkConnections();
+function showPanel(n){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  ['add','archive','settings'].forEach((p,i)=>{if(p===n)document.querySelectorAll('.nav-item')[i].classList.add('active');});
+  if(n==='archive')renderArchive();
+  if(n==='settings')checkConnections();
 }
 
-// ── Supabase ──────────────────────────────────────────────────────────────────
-async function sbFetch(path, opts = {}) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
-    ...opts,
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': 'Bearer ' + SUPABASE_ANON,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || '',
-      ...(opts.headers || {})
-    }
-  });
-  if (!res.ok) throw new Error(await res.text());
-  if (res.status === 204) return null;
-  return res.json();
+async function sb(path,opts={}){
+  const r=await fetch(SB_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'',...(opts.headers||{})}});
+  if(!r.ok)throw new Error(await r.text());
+  if(r.status===204)return null;
+  return r.json();
 }
+const getEps=()=>sb('episodes?order=added_at.desc');
+const insertEp=ep=>sb('episodes',{method:'POST',prefer:'return=representation',body:JSON.stringify(ep)});
+const deleteEp=id=>sb('episodes?id=eq.'+id,{method:'DELETE'});
 
-async function getEpisodes() { return sbFetch('episodes?order=added_at.desc'); }
-async function insertEpisode(ep) {
-  return sbFetch('episodes', { method: 'POST', prefer: 'return=representation', body: JSON.stringify(ep) });
-}
-async function deleteEpisode(id) { return sbFetch('episodes?id=eq.' + id, { method: 'DELETE' }); }
-
-// ── Summarize (via Netlify function) ──────────────────────────────────────────
-async function summarize() {
-  const title = document.getElementById('titleInput').value.trim();
-  const url = document.getElementById('urlInput').value.trim();
-  const transcript = document.getElementById('transcriptInput').value.trim();
-
-  if (!title) { setStatus('Please enter an episode title.', 'error'); return; }
-  if (transcript.length < 200) { setStatus('Transcript is too short — paste the full text.', 'error'); return; }
-
-  const btn = document.getElementById('summarizeBtn');
-  btn.disabled = true;
-  showProgress(true);
-  setProgress(10); setStatus('Sending to Claude...', '');
-
-  try {
-    const res = await fetch('/.netlify/functions/summarize', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, transcript })
-    });
-
+async function summarize(){
+  const title=document.getElementById('titleInput').value.trim();
+  const url=document.getElementById('urlInput').value.trim();
+  const transcript=document.getElementById('transcriptInput').value.trim();
+  if(!title){setStatus('Please enter an episode title.','error');return;}
+  if(transcript.length<200){setStatus('Transcript is too short.','error');return;}
+  const btn=document.getElementById('summarizeBtn');
+  btn.disabled=true;showProgress(true);setProgress(10);setStatus('Sending to Claude...','');
+  try{
+    const res=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,transcript})});
     setProgress(70);
-    const parsed = await res.json();
-    if (!res.ok) throw new Error(parsed.error || 'Function error');
+    const parsed=await res.json();
+    if(!res.ok)throw new Error(parsed.error||'Error');
+    setProgress(85);setStatus('Saving...','');
+    await insertEp({title,url:url||null,summary:parsed.summary||'',date:parsed.date||new Date().toISOString().split('T')[0],topics:parsed.topics||[],speakers:parsed.speakers||[],segments:parsed.segments||[]});
+    setProgress(100);setStatus('Saved!','success');
+    clearAdd();updateStats();
+    setTimeout(()=>{showProgress(false);showPanel('archive');},1400);
+  }catch(e){setStatus('Error: '+e.message,'error');}
+  btn.disabled=false;
+}
 
-    setProgress(85); setStatus('Saving to database...', '');
+function clearAdd(){['titleInput','urlInput','transcriptInput'].forEach(id=>document.getElementById(id).value='');}
+function showProgress(s){document.getElementById('progressWrap').style.display=s?'block':'none';}
+function setProgress(p){document.getElementById('progressFill').style.width=p+'%';}
+function setStatus(m,t){const el=document.getElementById('statusMsg');el.textContent=m;el.className='status-msg'+(t?' '+t:'');}
 
-    await insertEpisode({
-      title,
-      url: url || null,
-      summary: parsed.summary || '',
-      date: parsed.date || new Date().toISOString().split('T')[0],
-      topics: parsed.topics || [],
-      speakers: parsed.speakers || [],
-      segments: parsed.segments || []
-    });
-
-    setProgress(100); setStatus('Saved to archive!', 'success');
-    clearAdd();
-    updateStats();
-    setTimeout(() => { showProgress(false); showPanel('archive'); }, 1400);
-  } catch(e) {
-    setStatus('Error: ' + e.message, 'error');
+async function exportToNotion(epId){
+  const ep=cachedEps.find(e=>e.id===epId);if(!ep)return;
+  const btn=document.getElementById('nb-'+epId);
+  const lnk=document.getElementById('nl-'+epId);
+  btn.disabled=true;btn.classList.add('exporting');btn.textContent='Exporting...';
+  try{
+    const res=await fetch('/.netlify/functions/notion-export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ep)});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Failed');
+    btn.classList.remove('exporting');btn.classList.add('exported');btn.textContent='Exported ✓';
+    notionExported[epId]=data.url;
+    if(lnk&&data.url)lnk.innerHTML=`<a class="notion-link" href="${data.url}" target="_blank">Open in Notion ↗</a>`;
+  }catch(e){
+    btn.classList.remove('exporting');btn.disabled=false;btn.textContent='Export to Notion';
+    if(lnk)lnk.innerHTML=`<span class="notion-err">${e.message}</span>`;
   }
-  btn.disabled = false;
 }
 
-function clearAdd() {
-  ['titleInput','urlInput','transcriptInput'].forEach(id => document.getElementById(id).value = '');
-}
-function showProgress(show) { document.getElementById('progressWrap').style.display = show ? 'block' : 'none'; }
-function setProgress(pct) { document.getElementById('progressFill').style.width = pct + '%'; }
-function setStatus(msg, type) {
-  const el = document.getElementById('statusMsg');
-  el.textContent = msg;
-  el.className = 'status-msg' + (type ? ' ' + type : '');
-}
-
-// ── Archive ───────────────────────────────────────────────────────────────────
-async function renderArchive() {
-  const list = document.getElementById('epList');
-  list.innerHTML = '<div class="empty">Loading...</div>';
-  try { cachedEpisodes = await getEpisodes(); }
-  catch(e) { list.innerHTML = `<div class="empty">Could not load: ${e.message}</div>`; return; }
-
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const topic = document.getElementById('topicFilter').value;
-  const speaker = document.getElementById('speakerFilter').value;
-  const sort = document.getElementById('sortSelect').value;
-
-  // Populate filters
-  const allTopics = [...new Set(cachedEpisodes.flatMap(ep => ep.topics || []))].sort();
-  const allSpeakers = [...new Set(cachedEpisodes.flatMap(ep => ep.speakers || []))].sort();
-  const tf = document.getElementById('topicFilter');
-  const sf = document.getElementById('speakerFilter');
-  const tv = tf.value, sv = sf.value;
-  tf.innerHTML = '<option value="">All topics</option>' + allTopics.map(t => `<option value="${t}"${t===tv?' selected':''}>${t}</option>`).join('');
-  sf.innerHTML = '<option value="">All speakers</option>' + allSpeakers.map(s => `<option value="${s}"${s===sv?' selected':''}>${s}</option>`).join('');
-
-  let list2 = [...cachedEpisodes];
-  if (q) list2 = list2.filter(ep => {
-    const blob = [ep.title, ep.summary, ...(ep.topics||[]), ...(ep.speakers||[]),
-      ...(ep.segments||[]).flatMap(s => [s.title, ...(s.bullets||[])])].join(' ').toLowerCase();
-    return blob.includes(q);
-  });
-  if (topic) list2 = list2.filter(ep => (ep.topics||[]).includes(topic));
-  if (speaker) list2 = list2.filter(ep => (ep.speakers||[]).includes(speaker));
-  if (sort === 'oldest') list2.sort((a,b) => new Date(a.date) - new Date(b.date));
-
-  document.getElementById('countLabel').textContent = list2.length ? `${list2.length} episode${list2.length===1?'':'s'}` : '';
+async function renderArchive(){
+  const list=document.getElementById('epList');
+  list.innerHTML='<div class="empty">Loading...</div>';
+  try{cachedEps=await getEps();}catch(e){list.innerHTML=`<div class="empty">Error: ${e.message}</div>`;return;}
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const topic=document.getElementById('topicFilter').value;
+  const speaker=document.getElementById('speakerFilter').value;
+  const sort=document.getElementById('sortSelect').value;
+  const allTopics=[...new Set(cachedEps.flatMap(e=>e.topics||[]))].sort();
+  const allSpeakers=[...new Set(cachedEps.flatMap(e=>e.speakers||[]))].sort();
+  const tf=document.getElementById('topicFilter'),sf=document.getElementById('speakerFilter');
+  const tv=tf.value,sv=sf.value;
+  tf.innerHTML='<option value="">All topics</option>'+allTopics.map(t=>`<option value="${t}"${t===tv?' selected':''}>${t}</option>`).join('');
+  sf.innerHTML='<option value="">All speakers</option>'+allSpeakers.map(s=>`<option value="${s}"${s===sv?' selected':''}>${s}</option>`).join('');
+  let rows=[...cachedEps];
+  if(q)rows=rows.filter(ep=>[ep.title,ep.summary,...(ep.topics||[]),...(ep.speakers||[]),...(ep.segments||[]).flatMap(s=>[s.title,...(s.bullets||[])])].join(' ').toLowerCase().includes(q));
+  if(topic)rows=rows.filter(ep=>(ep.topics||[]).includes(topic));
+  if(speaker)rows=rows.filter(ep=>(ep.speakers||[]).includes(speaker));
+  if(sort==='oldest')rows.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  document.getElementById('countLabel').textContent=rows.length?`${rows.length} episode${rows.length===1?'':'s'}`:'';
   updateStats();
-
-  if (!cachedEpisodes.length) { list.innerHTML = '<div class="empty">No episodes yet. Add your first one.</div>'; return; }
-  if (!list2.length) { list.innerHTML = '<div class="empty">No episodes match your filters.</div>'; return; }
-
-  list.innerHTML = list2.map(ep => {
-    const isOpen = expanded.has(ep.id);
-    const dateStr = ep.date ? new Date(ep.date+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '';
+  if(!cachedEps.length){list.innerHTML='<div class="empty">No episodes yet.</div>';return;}
+  if(!rows.length){list.innerHTML='<div class="empty">No episodes match your filters.</div>';return;}
+  list.innerHTML=rows.map(ep=>{
+    const isOpen=expanded.has(ep.id);
+    const wasExp=!!notionExported[ep.id];
+    const ds=ep.date?new Date(ep.date+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}):'';
     return `<div class="ep-card">
       <div class="ep-header" onclick="toggleEp(${ep.id})">
         <div style="flex:1">
           <div class="ep-title">${esc(ep.title)}</div>
-          <div class="ep-meta">${[dateStr,(ep.speakers||[]).join(', ')].filter(Boolean).join(' · ')}</div>
+          <div class="ep-meta">${[ds,(ep.speakers||[]).join(', ')].filter(Boolean).join(' · ')}</div>
           <div class="ep-summary">${esc(ep.summary)}</div>
           <div class="ep-tags">${(ep.topics||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
         </div>
         <div class="chevron${isOpen?' open':''}">▾</div>
       </div>
       ${isOpen?`<div class="ep-body">
-        ${(ep.segments||[]).map(seg=>`<div class="segment">
-          <div class="seg-title">${esc(seg.title)}</div>
-          <ul class="bullets">${(seg.bullets||[]).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
-        </div>`).join('')}
+        ${(ep.segments||[]).map(s=>`<div class="segment"><div class="seg-title">${esc(s.title)}</div><ul class="bullets">${(s.bullets||[]).map(b=>`<li>${esc(b)}</li>`).join('')}</ul></div>`).join('')}
         <div class="ep-footer">
           ${ep.url?`<a href="${esc(ep.url)}" target="_blank"><button class="btn">Watch ↗</button></a>`:''}
+          <button class="btn btn-notion${wasExp?' exported':''}" id="nb-${ep.id}" onclick="exportToNotion(${ep.id})"${wasExp?' disabled':''}>${wasExp?'Exported ✓':'Export to Notion'}</button>
+          <span id="nl-${ep.id}">${wasExp&&notionExported[ep.id]?`<a class="notion-link" href="${notionExported[ep.id]}" target="_blank">Open in Notion ↗</a>`:''}</span>
           <button class="btn" onclick="removeEp(event,${ep.id})">Remove</button>
         </div>
       </div>`:''}
@@ -377,40 +261,20 @@ async function renderArchive() {
   }).join('');
 }
 
-function toggleEp(id) { expanded.has(id)?expanded.delete(id):expanded.add(id); renderArchive(); }
-async function removeEp(e, id) {
-  e.stopPropagation();
-  if (!confirm('Remove this episode?')) return;
-  await deleteEpisode(id);
-  renderArchive();
+function toggleEp(id){expanded.has(id)?expanded.delete(id):expanded.add(id);renderArchive();}
+async function removeEp(e,id){e.stopPropagation();if(!confirm('Remove?'))return;await deleteEp(id);renderArchive();}
+
+async function updateStats(){
+  try{const eps=cachedEps.length?cachedEps:await getEps();document.getElementById('statCount').textContent=eps.length;document.getElementById('statTopics').textContent=new Set(eps.flatMap(e=>e.topics||[])).size;}catch(e){}
 }
 
-// ── Stats ─────────────────────────────────────────────────────────────────────
-async function updateStats() {
-  try {
-    const eps = cachedEpisodes.length ? cachedEpisodes : await getEpisodes();
-    document.getElementById('statCount').textContent = eps.length;
-    document.getElementById('statTopics').textContent = new Set(eps.flatMap(ep => ep.topics||[])).size;
-  } catch(e) {}
+async function checkConnections(){
+  const sb2=document.getElementById('supabaseStatus'),fn=document.getElementById('fnStatus');
+  try{await sb('episodes?limit=1');sb2.textContent='Connected ✓';sb2.style.color='var(--success)';}catch(e){sb2.textContent='Error';sb2.style.color='var(--danger)';}
+  try{const r=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});fn.textContent=r.status!==404?'Available ✓':'Not found';fn.style.color=r.status!==404?'var(--success)':'var(--danger)';}catch(e){fn.textContent='Unavailable';fn.style.color='var(--danger)';}
 }
 
-// ── Settings ──────────────────────────────────────────────────────────────────
-async function checkConnections() {
-  const sbEl = document.getElementById('supabaseStatus');
-  const fnEl = document.getElementById('fnStatus');
-  try {
-    await sbFetch('episodes?limit=1');
-    sbEl.textContent = 'Connected ✓'; sbEl.style.color = 'var(--success)';
-  } catch(e) { sbEl.textContent = 'Error'; sbEl.style.color = 'var(--danger)'; }
-  try {
-    const r = await fetch('/.netlify/functions/summarize', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
-    fnEl.textContent = r.status !== 404 ? 'Available ✓' : 'Not found';
-    fnEl.style.color = r.status !== 404 ? 'var(--success)' : 'var(--danger)';
-  } catch(e) { fnEl.textContent = 'Unavailable'; fnEl.style.color = 'var(--danger)'; }
-}
-
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 updateStats();
 </script>
 </body>
